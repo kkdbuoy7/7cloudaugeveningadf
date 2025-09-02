@@ -1,0 +1,42 @@
+{
+	"name": "8am_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline3",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"dbname": "7cloudsqldb1",
+					"tablename": "table8"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline4",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2025-08-08T08:00:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						8
+					]
+				}
+			}
+		}
+	}
+}

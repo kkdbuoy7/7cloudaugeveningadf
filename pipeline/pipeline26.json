@@ -1,0 +1,46 @@
+{
+	"name": "pipeline26",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow8",
+						"type": "DataFlowReference",
+						"parameters": {
+							"param1": {
+								"value": "@pipeline().parameters.p1",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 32,
+						"computeType": "MemoryOptimized"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"p1": {
+				"type": "string",
+				"defaultValue": "'Seattle'"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-29T14:45:48Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

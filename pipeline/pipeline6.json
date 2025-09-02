@@ -1,0 +1,50 @@
+{
+	"name": "pipeline6",
+	"properties": {
+		"activities": [
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.param1, 'hi')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Wait2",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 15
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Wait1",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 10
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"param1": {
+				"type": "string",
+				"defaultValue": "\"delhi\""
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-11T14:49:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

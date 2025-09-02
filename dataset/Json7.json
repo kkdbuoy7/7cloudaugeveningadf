@@ -1,0 +1,44 @@
+{
+	"name": "Json7",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"filename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"fileSystem": "input-data"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"filepath": {
+					"type": "string"
+				},
+				"filename": {
+					"type": "string"
+				},
+				"dbname": {
+					"type": "string"
+				},
+				"tablename": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

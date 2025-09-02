@@ -1,0 +1,36 @@
+{
+	"name": "11am_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline3",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"dbname": "7cloudsqldb2",
+					"tablename": "table11"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2025-08-08T11:00:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						11
+					]
+				}
+			}
+		}
+	}
+}

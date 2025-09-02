@@ -1,0 +1,68 @@
+{
+	"name": "dataflow4",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText30",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText31",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {00001John Smith          HR             00083638} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(ID = substring({00001John Smith          HR             00083638}, 1, 5),",
+				"          Name = substring({00001John Smith          HR             00083638}, 6, 14),",
+				"          Dept = substring({00001John Smith          HR             00083638}, 26, 2),",
+				"          emp_id = substring({00001John Smith          HR             00083638}, 40, 9)) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          ID,",
+				"          Name,",
+				"          Dept,",
+				"          emp_id",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          airline_id as string,",
+				"          airline_name as string,",
+				"          country as string",
+				"     ),",
+				"     partitionFileNames:['emp2108.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

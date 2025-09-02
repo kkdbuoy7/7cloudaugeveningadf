@@ -1,0 +1,172 @@
+{
+	"name": "dataflow7",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText35",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable7",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable8",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable9",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "exists1"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "exists2"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "alterRow2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ID as integer,",
+				"          Firstname as string,",
+				"          LastName as string,",
+				"          City as string,",
+				"          StartDate as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source(output(",
+				"          ID as integer,",
+				"          Firstname as string,",
+				"          LastName as string,",
+				"          City as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          IsActive as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"source2 filter(IsActive == true()) ~> filter1",
+				"select1 derive(sourcehash = md5(ID,Firstname,City)) ~> derivedColumn1",
+				"filter1 derive(targethash = md5(ID,Firstname,City)) ~> derivedColumn2",
+				"source1 select(mapColumn(",
+				"          ID,",
+				"          Firstname,",
+				"          LastName,",
+				"          City,",
+				"          StartDate",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumn1, derivedColumn2 exists(sourcehash == targethash,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists1",
+				"exists1 derive(endDate = toDate('2099-01-01'),",
+				"          isActive = true(),",
+				"          StartDate = currentDate()) ~> derivedColumn3",
+				"derivedColumn3 alterRow(insertIf(true())) ~> alterRow1",
+				"derivedColumn2, derivedColumn1 exists(select1@ID == source2@ID && select1@Firstname == source2@Firstname && select1@City !=source2@City,",
+				"     negate:false,",
+				"     broadcast: 'auto')~> exists2",
+				"exists2 derive(EndDate = currentDate(),",
+				"          IsActive = false()) ~> derivedColumn4",
+				"derivedColumn4 alterRow(upsertIf(true())) ~> alterRow2",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ID as integer,",
+				"          Firstname as string,",
+				"          LastName as string,",
+				"          City as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          IsActive as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ID,",
+				"          Firstname,",
+				"          LastName,",
+				"          City,",
+				"          StartDate,",
+				"          EndDate = endDate,",
+				"          IsActive = isActive",
+				"     )) ~> sink1",
+				"alterRow2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ID as integer,",
+				"          Firstname as string,",
+				"          LastName as string,",
+				"          City as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          IsActive as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['ID'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+			]
+		}
+	}
+}

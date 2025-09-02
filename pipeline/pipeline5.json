@@ -1,0 +1,51 @@
+{
+	"name": "pipeline5",
+	"properties": {
+		"activities": [
+			{
+				"name": "Filter1",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.array1",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item(),'delhi')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 10
+				}
+			}
+		],
+		"parameters": {
+			"array1": {
+				"type": "array",
+				"defaultValue": [
+					"delhi",
+					"mumbai"
+				]
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-11T14:43:58Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

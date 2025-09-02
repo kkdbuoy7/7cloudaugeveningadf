@@ -1,0 +1,69 @@
+{
+	"name": "pipeline12",
+	"properties": {
+		"activities": [
+			{
+				"name": "Switch1",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@string(variables('var1'))",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "5",
+							"activities": [
+								{
+									"name": "Wait1",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 5
+									}
+								}
+							]
+						},
+						{
+							"value": "6",
+							"activities": [
+								{
+									"name": "Wait2",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 10
+									}
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Wait_def",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"var1": {
+				"type": "Integer",
+				"defaultValue": 1
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-12T15:20:02Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

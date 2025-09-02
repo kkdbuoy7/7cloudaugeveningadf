@@ -1,0 +1,17 @@
+{
+	"name": "7cloudaugeveningadf",
+	"properties": {
+		"globalParameters": {
+			"url123": {
+				"type": "string",
+				"value": "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0"
+			}
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "9fefd9ff-caf0-4ea6-9502-87d55ec73961",
+		"tenantId": "ca7e3749-ad5f-4586-bee9-17e3e34fc5be"
+	}
+}

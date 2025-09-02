@@ -1,0 +1,44 @@
+{
+	"name": "AzureSqlTable5",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SalesId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "ProductId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Qty",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Amount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "FactSales"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

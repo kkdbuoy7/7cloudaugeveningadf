@@ -1,0 +1,108 @@
+{
+	"name": "dataflow6",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText34",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable5",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable6",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SalesId as short,",
+				"          ProductId as short,",
+				"          Qty as short,",
+				"          Amount as double,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source(output(",
+				"          SalesId as long,",
+				"          ProductId as integer,",
+				"          Qty as integer,",
+				"          Amount as decimal(18,2),",
+				"          ModifiedDate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select ModifiedDate from dbo.FactSales',",
+				"     format: 'query') ~> source2",
+				"source2 aggregate(lastWM = max(ModifiedDate)) ~> aggregate1",
+				"source1 derive(ModifiedDate_ts = toTimestamp(ModifiedDate,\"yyyy-MM-dd'T'HH:mm:ss\")) ~> derivedColumn1",
+				"derivedColumn1, aggregate1 join(1==1,",
+				"     joinType:'cross',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 filter(iif(isNull(lastWM), true(), ModifiedDate_ts > lastWM)) ~> filter1",
+				"filter1 alterRow(upsertIf(1==1)) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          SalesId as long,",
+				"          ProductId as integer,",
+				"          Qty as integer,",
+				"          Amount as decimal(18,2),",
+				"          ModifiedDate as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['SalesId'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          SalesId,",
+				"          ProductId,",
+				"          Qty,",
+				"          Amount,",
+				"          ModifiedDate = ModifiedDate_ts",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
